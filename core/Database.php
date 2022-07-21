@@ -5,7 +5,6 @@ require_once(dirname(__DIR__).'/core/Application.php');
 class Database 
 {
   public \PDO $pdo;
-  static $ROOT_DIR;
 
   public function __construct(array $config)
   {
@@ -35,9 +34,9 @@ class Database
       require_once(dirname(__DIR__)."\migrations\\".$migration);
       $className = pathinfo($migration, PATHINFO_FILENAME);
       $instance = new $className();
-      echo PHP_EOL."Applying Migration $migration".PHP_EOL;
+      $this->log("Applying Migration $migration");
       $instance->up();
-      echo "Applied Migration $migration".PHP_EOL.PHP_EOL;
+      $this->log("Applied Migration $migration");
       $newMigrations[] = $migration;
       // echo '<pre>';
       // var_dump($className);
@@ -48,7 +47,7 @@ class Database
     if(!empty($newMigrations)){
       $this->saveMigrations($newMigrations);
     } else {
-      echo 'All migrations are applied';
+      $this->log("All migrations are applied");
     }
 
     // echo '<pre>';
@@ -83,6 +82,10 @@ class Database
     ");
 
     $statement->execute();
+  }
 
+  protected function log($message)
+  {
+    echo '['.date('Y-m-d H:i:s').'] - '. $message . PHP_EOL;
   }
 }
