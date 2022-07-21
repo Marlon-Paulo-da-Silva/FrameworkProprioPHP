@@ -1,6 +1,6 @@
 <?php
 
-require_once('Application.php');
+require_once(dirname(__DIR__).'/core/Application.php');
 
 class Database 
 {
@@ -19,14 +19,28 @@ class Database
 
   public function applyMigrations(){
     $this->createMigrationsTable();
-    $this->getAppliedMigrations();
+    $appliedMigrations = $this->getAppliedMigrations();
 
     $files = scandir(dirname(__DIR__).'\migrations');
-    echo '<pre>';
-    var_dump($files);
-    echo '</pre>';
-    exit;
+    $toApplyMigrations = array_diff($files, $appliedMigrations);
 
+    foreach($toApplyMigrations as $migration){
+      if($migration === '.' or $migration === '..'){
+        continue;
+      }
+
+      require_once(dirname(__DIR__)."\migrations\\".$migration);
+      // echo '<pre>';
+      // var_dump(dirname(__DIR__)."\migrations\\".$migration);
+      // echo '</pre>';
+      // exit;
+
+    }
+
+    // echo '<pre>';
+    // var_dump($toApplyMigrations);
+    // echo '</pre>';
+    // exit;
   }
 
   public function createMigrationsTable()
