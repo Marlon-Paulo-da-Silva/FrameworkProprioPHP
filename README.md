@@ -5,7 +5,7 @@ Esse projeto está em fase inicial, mas o objetivo e fazer meu próprio como um 
 <br />
 <br />
 
-Itens terminados do Framework
+<h2>Itens terminados do Framework:<h2>
 
 <h4>Migrations</h4>
 
