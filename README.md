@@ -7,7 +7,7 @@ Esse projeto está em fase inicial, mas o objetivo e fazer meu próprio como um 
 
 <h2>Itens terminados do Framework:<h2>
 
-<h4>Migrations</h4>
+<h4>- Migrations</h4>
 
 - Gerenciamento de migrations está pronto, basta criar um novo arquivo na pasta \migrations e com os métodos up() e down() para que o script execute corretamente
 
