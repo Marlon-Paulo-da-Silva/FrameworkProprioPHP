@@ -21,7 +21,10 @@ class Database
     $this->createMigrationsTable();
     $appliedMigrations = $this->getAppliedMigrations();
 
-    $files = scandir(dirname(__DIR__).'\migrations');
+    $newMigrations = [];
+
+
+    $files = scandir(dirname(__DIR__).'/migrations');
     $toApplyMigrations = array_diff($files, $appliedMigrations);
 
     foreach($toApplyMigrations as $migration){
@@ -30,11 +33,22 @@ class Database
       }
 
       require_once(dirname(__DIR__)."\migrations\\".$migration);
+      $className = pathinfo($migration, PATHINFO_FILENAME);
+      $instance = new $className();
+      echo PHP_EOL."Applying Migration $migration".PHP_EOL;
+      $instance->up();
+      echo "Applied Migration $migration".PHP_EOL.PHP_EOL;
+      $newMigrations[] = $migration;
       // echo '<pre>';
-      // var_dump(dirname(__DIR__)."\migrations\\".$migration);
+      // var_dump($className);
       // echo '</pre>';
-      // exit;
 
+    }
+
+    if(!empty($newMigrations)){
+      $this->saveMigrations($newMigrations);
+    } else {
+      echo 'All migrations are applied';
     }
 
     // echo '<pre>';
@@ -58,5 +72,17 @@ class Database
     $statement->execute();
 
     return $statement->fetchAll(\PDO::FETCH_COLUMN);
+  }
+
+  public function saveMigrations(array $migrations){
+    
+    $str = implode(",", array_map(fn($m) => "('$m')", $migrations));
+
+    $statement = $this->pdo->prepare("INSERT INTO migrations (migration) VALUES 
+      $str
+    ");
+
+    $statement->execute();
+
   }
 }
