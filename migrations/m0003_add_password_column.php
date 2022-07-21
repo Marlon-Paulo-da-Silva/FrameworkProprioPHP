@@ -8,7 +8,7 @@ $dotenv->load();
 
 
 
-class m0001_initial {
+class m0003_add_password_column {
   public function up()
   {
 
@@ -24,16 +24,7 @@ class m0001_initial {
     $app = new Application(__DIR__, $config);
     $db = $app->db;
 
-    $SQL = "CREATE TABLE users (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            email VARCHAR(255) NOT NULL,
-            firstname VARCHAR(255) NOT NULL,
-            lastname VARCHAR(255) NOT NULL,
-            status TINYINT NOT NULL,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-          ) ENGINE=INNODB;";
-
-    $db->pdo->exec($SQL);
+    $db->pdo->exec("ALTER TABLE users ADD COLUMN password VARCHAR(512) NOT NULL");
 
   }
 
@@ -51,9 +42,7 @@ class m0001_initial {
     $app = new Application(__DIR__, $config);
     $db = $app->db;
 
-    $SQL = "DROP TABLE users;";
-
-    $db->pdo->exec($SQL);
+    $db->pdo->exec("ALTER TABLE users DROP COLUMN password;");
   }
 
 }
